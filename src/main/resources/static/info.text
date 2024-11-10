@@ -1,0 +1,7 @@
+### environment variables
+
+DATABASE_HOST=mysql database host name
+DATABASE_PORT=mysql database port
+DATABASE_NAME=mysql database name
+DATABASE_USERNAME=mysql database username
+DATABASE_PASSWORD=mysql database password

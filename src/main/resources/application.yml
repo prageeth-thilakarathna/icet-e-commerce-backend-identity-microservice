@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: Identity-Microservice
+  datasource:
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+server:
+  port: 8080
