@@ -1,4 +1,4 @@
-"# icet-e-commerce-backend-identity-microservice"
+<h1 style="margin-bottom: 50px">E-Commerce Backend Identity Microservice</h1>
 
-setup info ---> src/main/resources/static/info.text
-setup mysql data ---> src/main/resources/static/data.sql
+<p>setup info ---&gt; src/main/resources/static/info.text</p>
+<p>setup mysql data ---&gt; src/main/resources/static/data.sql</p>
