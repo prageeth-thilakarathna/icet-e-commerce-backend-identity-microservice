@@ -1,6 +1,7 @@
 package edu.icet.demo.controller;
 
 import edu.icet.demo.constants.Constants;
+import edu.icet.demo.dto.ResponseDTO;
 import edu.icet.demo.dto.UserRequest;
 import edu.icet.demo.exception.InvalidParameterException;
 import edu.icet.demo.service.UserService;
@@ -35,5 +36,10 @@ public class UserController {
                             error.getDefaultMessage()}, Locale.ENGLISH));
         }
         return userService.register(userRequest);
+    }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<ResponseDTO> authenticate(@RequestParam String token){
+        return userService.authenticate(token);
     }
 }

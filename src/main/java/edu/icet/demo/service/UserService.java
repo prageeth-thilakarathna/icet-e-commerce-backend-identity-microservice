@@ -3,6 +3,7 @@ package edu.icet.demo.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.icet.demo.constants.Constants;
 import edu.icet.demo.constants.Status;
+import edu.icet.demo.dto.ResponseDTO;
 import edu.icet.demo.dto.UserRequest;
 import edu.icet.demo.exception.UserExistsException;
 import edu.icet.demo.model.Role;
@@ -12,6 +13,7 @@ import edu.icet.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,12 +34,12 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public ResponseEntity<Map<String, Object>> register(UserRequest userRequest){
-        if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
+    public ResponseEntity<Map<String, Object>> register(UserRequest userRequest) {
+        if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
             throw new UserExistsException(msgSrc.getMessage(Constants.ALREADY_EXISTS,
                     new Object[]{"user email"}, Locale.ENGLISH));
         }
-        if(userRepository.findByPhoneNumber(userRequest.getPhoneNumber()).isPresent()){
+        if (userRepository.findByPhoneNumber(userRequest.getPhoneNumber()).isPresent()) {
             throw new UserExistsException(msgSrc.getMessage(Constants.ALREADY_EXISTS,
                     new Object[]{"user phone number"}, Locale.ENGLISH));
         }
@@ -54,5 +56,10 @@ public class UserService {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "The user registered successfully.");
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseDTO> authenticate(String token) {
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .status(HttpStatus.OK).message("The token is valid.").build());
     }
 }
