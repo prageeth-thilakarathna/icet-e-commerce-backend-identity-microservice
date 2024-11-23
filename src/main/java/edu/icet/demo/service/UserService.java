@@ -9,6 +9,7 @@ import edu.icet.demo.model.Role;
 import edu.icet.demo.model.User;
 import edu.icet.demo.repository.RoleRepository;
 import edu.icet.demo.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
+    @Transactional
     public ResponseEntity<Map<String, Object>> register(UserRequest userRequest){
         if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
             throw new UserExistsException(msgSrc.getMessage(Constants.ALREADY_EXISTS,
@@ -45,10 +47,12 @@ public class UserService {
         newUser.setStatus(Status.NOT_VERIFIED);
 
         Optional<Role> role = roleRepository.findByName(edu.icet.demo.constants.Role.USER);
+        newUser.setRole(role.orElse(null));
 
+        userRepository.save(newUser);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "User registered successfully.");
+        response.put("message", "The user registered successfully.");
         return ResponseEntity.ok(response);
     }
 }

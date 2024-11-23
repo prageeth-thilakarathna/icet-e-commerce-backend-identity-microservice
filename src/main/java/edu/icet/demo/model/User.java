@@ -50,7 +50,7 @@ public class User implements UserDetails {
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    private Date joindDate;
+    private Date joinedDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
