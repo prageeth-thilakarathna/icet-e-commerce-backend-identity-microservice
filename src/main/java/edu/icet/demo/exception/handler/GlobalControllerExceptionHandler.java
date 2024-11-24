@@ -1,6 +1,7 @@
 package edu.icet.demo.exception.handler;
 
 import edu.icet.demo.exception.InvalidParameterException;
+import edu.icet.demo.exception.UnauthorizedException;
 import edu.icet.demo.exception.UserExistsException;
 import edu.icet.demo.exception.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,12 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.builder()
                         .status(HttpStatus.CONFLICT).message(e.getMessage()).build());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    protected ResponseEntity<ErrorResponse> handleUnauthorizedRequest(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.builder()
+                        .status(HttpStatus.UNAUTHORIZED).message(e.getMessage()).build());
     }
 }
