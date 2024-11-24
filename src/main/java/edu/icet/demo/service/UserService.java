@@ -3,6 +3,7 @@ package edu.icet.demo.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.icet.demo.constants.Constants;
 import edu.icet.demo.constants.Status;
+import edu.icet.demo.constants.TokenType;
 import edu.icet.demo.dto.LoginRequest;
 import edu.icet.demo.dto.LoginResponse;
 import edu.icet.demo.dto.ResponseDTO;
@@ -10,9 +11,12 @@ import edu.icet.demo.dto.UserRequest;
 import edu.icet.demo.exception.UnauthorizedException;
 import edu.icet.demo.exception.UserExistsException;
 import edu.icet.demo.model.Role;
+import edu.icet.demo.model.Token;
 import edu.icet.demo.model.User;
 import edu.icet.demo.repository.RoleRepository;
+import edu.icet.demo.repository.TokenRepository;
 import edu.icet.demo.repository.UserRepository;
+import edu.icet.demo.security.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -39,6 +43,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final TokenRepository tokenRepository;
 
     @Transactional
     public ResponseEntity<Map<String, Object>> register(UserRequest userRequest) {
@@ -77,22 +83,32 @@ public class UserService {
                     msgSrc.getMessage("exception.unauthorized.invalid_credentials",
                             null, Locale.ENGLISH));
         }
-        if(user.get().getStatus()!=Status.ACTIVE){
+        if (user.get().getStatus() != Status.ACTIVE) {
             throw new UnauthorizedException(
                     msgSrc.getMessage("exception.unauthorized.account_not_active",
                             null, Locale.ENGLISH));
         }
 
-        try{
+        try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.get().getEmail(), loginRequest.password()));
-        } catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             throw new UnauthorizedException(
                     msgSrc.getMessage("exception.unauthorized.invalid_credentials",
                             null, Locale.ENGLISH));
         }
 
-        return null;
+        String token = jwtService.generateToken(user.get(), TokenType.BEARER);
 
+        Token tokenEntity = new Token();
+        tokenEntity.setToken(token);
+        tokenEntity.setType(TokenType.BEARER);
+        tokenEntity.setExpirationDate(jwtService.getExpiration(token));
+        tokenEntity.setUser(user.get());
+
+        tokenRepository.save(tokenEntity);
+
+        return ResponseEntity.ok()
+                .body(LoginResponse.builder().token(token).build());
     }
 }
