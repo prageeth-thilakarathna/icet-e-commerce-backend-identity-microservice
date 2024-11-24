@@ -3,6 +3,8 @@ package edu.icet.demo.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.icet.demo.constants.Constants;
 import edu.icet.demo.constants.Status;
+import edu.icet.demo.dto.LoginRequest;
+import edu.icet.demo.dto.LoginResponse;
 import edu.icet.demo.dto.ResponseDTO;
 import edu.icet.demo.dto.UserRequest;
 import edu.icet.demo.exception.UserExistsException;
@@ -61,5 +63,9 @@ public class UserService {
     public ResponseEntity<ResponseDTO> authenticate(String token) {
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(HttpStatus.OK).message("The token is valid.").build());
+    }
+
+    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
+        return null;
     }
 }

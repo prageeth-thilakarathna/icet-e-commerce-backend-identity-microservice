@@ -1,6 +1,8 @@
 package edu.icet.demo.controller;
 
 import edu.icet.demo.constants.Constants;
+import edu.icet.demo.dto.LoginRequest;
+import edu.icet.demo.dto.LoginResponse;
 import edu.icet.demo.dto.ResponseDTO;
 import edu.icet.demo.dto.UserRequest;
 import edu.icet.demo.exception.InvalidParameterException;
@@ -28,7 +30,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(
-            @Valid @RequestBody UserRequest userRequest, BindingResult result){
+            @Valid @RequestBody UserRequest userRequest, BindingResult result) {
         if (result.hasErrors()) {
             FieldError error = result.getFieldError();
             throw new InvalidParameterException(msgSrc.getMessage(Constants.FIELD_ISSUE,
@@ -39,7 +41,12 @@ public class UserController {
     }
 
     @GetMapping("/authenticate")
-    public ResponseEntity<ResponseDTO> authenticate(@RequestParam String token){
+    public ResponseEntity<ResponseDTO> authenticate(@RequestParam String token) {
         return userService.authenticate(token);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest);
     }
 }
