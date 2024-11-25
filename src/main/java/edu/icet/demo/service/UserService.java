@@ -22,9 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +39,7 @@ public class UserService {
     private final ObjectMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final AuthenticationManager authenticationManager;
+    //private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
 
@@ -89,14 +86,14 @@ public class UserService {
                             null, Locale.ENGLISH));
         }
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.get().getEmail(), loginRequest.password()));
-        } catch (AuthenticationException e) {
-            throw new UnauthorizedException(
-                    msgSrc.getMessage("exception.unauthorized.invalid_credentials",
-                            null, Locale.ENGLISH));
-        }
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(user.get().getEmail(), loginRequest.password()));
+//        } catch (AuthenticationException e) {
+//            throw new UnauthorizedException(
+//                    msgSrc.getMessage("exception.unauthorized.invalid_credentials",
+//                            null, Locale.ENGLISH));
+//        }
 
         String token = jwtService.generateToken(user.get(), TokenType.BEARER);
 
